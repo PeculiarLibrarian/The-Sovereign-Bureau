@@ -1,19 +1,34 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix padi: <https://padi.tech/v2/schema#> .
 
-# THE AUTHORITY DEFINITION
-padi:SovereignNode rdf:type owl:Class ;
-    padi:tag "#sovereign-bureau" ;
-    padi:principle "#deterministic-truth" .
+# Metadata
+<https://padi.tech/v2/schema#> rdf:type owl:Ontology ;
+    rdfs:label "PADI Technical Standard Core" ;
+    owl:versionInfo "2.0.0" .
 
+# Classes
+padi:SovereignNode rdf:type owl:Class ;
+    rdfs:label "Sovereign Node" ;
+    rdfs:comment "A deterministic validation authority." .
+
+padi:LiaisonAgent rdf:type owl:Class ;
+    rdfs:label "Liaison Agent" ;
+    rdfs:comment "The A2UI layer for translating structured data to human intent." .
+
+# Properties
+padi:integrityLevel rdf:type owl:DatatypeProperty ;
+    rdfs:domain padi:SovereignNode ;
+    rdfs:range xsd:integer .
+
+padi:governingStandard rdf:type owl:DatatypeProperty ;
+    rdfs:domain padi:SovereignNode ;
+    rdfs:range xsd:string .
+
+# Instances
 padi:Nairobi_01_Node rdf:type padi:SovereignNode ;
     padi:integrityLevel 100 ;
-    padi:status "ACTIVE" ;
-    padi:authority "The Peculiar Librarian" .
-
-# THE SEMANTIC INTEROPERABILITY RULE
-padi:InformationScienceNode rdf:type owl:Class ;
-    padi:requires "#semantic-web" ;
-    padi:goal "#information-science" .
+    padi:governingStandard "PADI-v2.0" ;
+    rdfs:label "The Peculiar Librarian | Primary Node" .
