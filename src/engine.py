@@ -5,27 +5,37 @@ TAGS: #information-science #semantic-web #sovereign-bureau #deterministic-truth
 """
 
 import rdflib
+from pathlib import Path
+import os
 
-class PADI_Engine:
-    def __init__(self, ttl_path="ontology/padi_core.ttl"):
-        self.BUREAU_TAGS = [
-            "#information-science", 
-            "#semantic-web", 
-            "#sovereign-bureau", 
-            "#deterministic-truth"
-        ]
+class PADIEngine:
+    """The core engine for validating structural authority."""
+    def __init__(self):
         self.graph = rdflib.Graph()
-        try:
-            self.graph.parse(ttl_path, format="turtle")
-            print(f"BUREAU STATUS: Node Active. {len(self.graph)} triples loaded.")
-        except Exception as e:
-            print(f"STRUCTURAL ERROR: Could not load ontology. {e}")
+        self.base_path = Path(__file__).parent.parent
+        self.ontology_path = self.base_path / "ontology" / "padi_core.ttl"
+        self.NS = rdflib.Namespace("https://padi.tech/v2/schema#")
+        self.boot_sequence()
 
-    def validate_state(self):
-        # Verification logic that ensures all 4 tags are represented in the node's intent
-        return all(tag.startswith("#") for tag in self.BUREAU_TAGS)
+    def boot_sequence(self):
+        if not self.ontology_path.exists():
+            raise FileNotFoundError(f"CRITICAL: Ontology missing at {self.ontology_path}")
+        
+        try:
+            self.graph.parse(str(self.ontology_path), format="turtle")
+            print(f"[BUREAU] Nairobi-01-Node Online. {len(self.graph)} triples active.")
+        except Exception as e:
+            print(f"[ERROR] Failed to initialize PADI logic: {e}")
+
+    def get_integrity(self, node_id="Nairobi_01_Node"):
+        node_uri = self.NS[node_id]
+        level = self.graph.value(node_uri, self.NS.integrityLevel)
+        return int(level) if level is not None else 0
+
+    def validate_structure(self):
+        """Standard check for PADI compliance."""
+        return self.get_integrity() == 100
 
 if __name__ == "__main__":
-    node = PADI_Engine()
-    if node.validate_state():
-        print("NAIROBI-01: Deterministic Truth Verified.")
+    engine = PADIEngine()
+    print(f"Node Integrity Verified: {engine.validate_structure()}")
