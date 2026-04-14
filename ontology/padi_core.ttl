@@ -4,21 +4,30 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix padi: <https://padi.tech/v2/schema#> .
 
-# Metadata
+# ==========================================
+# METADATA & ONTOLOGY DEFINITION
+# ==========================================
 <https://padi.tech/v2/schema#> rdf:type owl:Ontology ;
     rdfs:label "PADI Technical Standard Core" ;
-    owl:versionInfo "2.0.0" .
+    rdfs:comment "The Sovereign Bureau's deterministic framework for Information Science." ;
+    owl:versionInfo "2.1.0" .
 
-# Classes
+# ==========================================
+# CLASSES (The 'Shelves')
+# ==========================================
 padi:SovereignNode rdf:type owl:Class ;
-    rdfs:label "Sovereign Node" ;
-    rdfs:comment "A deterministic validation authority." .
+    rdfs:label "Sovereign Node" .
 
 padi:LiaisonAgent rdf:type owl:Class ;
-    rdfs:label "Liaison Agent" ;
-    rdfs:comment "The A2UI layer for translating structured data to human intent." .
+    rdfs:label "Liaison Agent" .
 
-# Properties
+padi:ResourceAddress rdf:type owl:Class ;
+    rdfs:label "Deterministic Address" ;
+    rdfs:comment "Unique coordinate for a digital resource, preventing retrieval drift." .
+
+# ==========================================
+# PROPERTIES (The 'Connectors')
+# ==========================================
 padi:integrityLevel rdf:type owl:DatatypeProperty ;
     rdfs:domain padi:SovereignNode ;
     rdfs:range xsd:integer .
@@ -27,8 +36,28 @@ padi:governingStandard rdf:type owl:DatatypeProperty ;
     rdfs:domain padi:SovereignNode ;
     rdfs:range xsd:string .
 
-# Instances
+padi:resourceStatus rdf:type owl:DatatypeProperty ;
+    rdfs:domain padi:ResourceAddress ;
+    rdfs:range xsd:string .
+
+padi:hasCoordinate rdf:type owl:DatatypeProperty ;
+    rdfs:domain padi:ResourceAddress ;
+    rdfs:range xsd:string .
+
+# ==========================================
+# INSTANCES (The 'Authority')
+# ==========================================
 padi:Nairobi_01_Node rdf:type padi:SovereignNode ;
     padi:integrityLevel 100 ;
-    padi:governingStandard "PADI-v2.0" ;
+    padi:governingStandard "PADI-v2.1" ;
     rdfs:label "The Peculiar Librarian | Primary Node" .
+
+padi:Dewey_Modernized rdf:type padi:ResourceAddress ;
+    padi:resourceStatus "DETERMINISTIC" ;
+    padi:hasCoordinate "PADI-025.04" ;
+    rdfs:label "Modernized Dewey Retrieval Logic" .
+
+padi:A2UI_Standard rdf:type padi:ResourceAddress ;
+    padi:resourceStatus "ACTIVE" ;
+    padi:hasCoordinate "PADI-A2UI-001" ;
+    rdfs:label "Agent-to-User Interface Protocol" .
