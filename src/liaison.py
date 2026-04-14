@@ -1,22 +1,41 @@
-from .engine import PADIEngine
+import json
+from rdflib import Graph
 
-class SovereignLiaison:
-    """The Liaison translates complex ontology into authoritative insights."""
-    def __init__(self):
-        self.engine = PADIEngine()
+def generate_graph_data(ttl_path, output_path):
+    g = Graph()
+    g.parse(ttl_path, format="turtle")
+    
+    nodes = []
+    links = []
+    seen_nodes = set()
 
-    def broadcast(self, insight: str):
-        if self.engine.validate_structure():
-            return (
-                f"\n--- [SOVEREIGN BUREAU OFFICIAL BROADCAST] ---\n"
-                f"VERDICT: {insight}\n"
-                f"STATUS: DETERMINISTIC TRUTH VERIFIED\n"
-                f"NODE: NAIROBI-01-STANDARD\n"
-                f"--------------------------------------------\n"
-            )
-        return "ERROR: Structural integrity compromised. Broadcast aborted."
+    for s, p, o in g:
+        # Process Subject
+        s_label = str(s).split('#')[-1] or str(s).split('/')[-1]
+        if s_label not in seen_nodes:
+            nodes.append({"id": s_label, "group": "Subject"})
+            seen_nodes.add(s_label)
+        
+        # Process Object
+        o_label = str(o).split('#')[-1] or str(o).split('/')[-1]
+        if o_label not in seen_nodes:
+            # Differentiate Literals from URIs
+            group = "Value" if "http" not in str(o) else "Object"
+            nodes.append({"id": o_label, "group": group})
+            seen_nodes.add(o_label)
+            
+        # Create Link (Predicate)
+        p_label = str(p).split('#')[-1] or str(p).split('/')[-1]
+        links.append({"source": s_label, "target": o_label, "label": p_label})
+
+    graph_payload = {"nodes": nodes, "links": links}
+    
+    with open(output_path, 'w') as f:
+        json.dump(graph_payload, f, indent=4)
+    
+    print(f"[BUREAU] Graph serialized: {len(nodes)} nodes, {len(links)} links.")
+    return len(g)
 
 if __name__ == "__main__":
-    # Internal test execution
-    liaison = SovereignLiaison()
-    print(liaison.broadcast("Information is not authority. Structure is."))
+    count = generate_graph_data("ontology/padi_core.ttl", "data/graph_data.json")
+    print(f"[BUREAU] Nairobi-01-Node Online. {count} triples active.")
