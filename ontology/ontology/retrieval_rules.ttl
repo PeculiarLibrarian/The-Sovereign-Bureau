@@ -1,0 +1,18 @@
+@prefix padi: <https://padi.tech/v2/schema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Define the "Call Number" equivalent for digital resources
+padi:ResourceAddress rdf:type rdfs:Class ;
+    rdfs:label "Deterministic Address" ;
+    rdfs:comment "The unique coordinate of a resource in the Sovereign Stack." .
+
+# A rule for the Librarian to ignore "Imagined" resources
+padi:ResourceStatus rdf:type rdfs:Property ;
+    rdfs:domain padi:ResourceAddress ;
+    rdfs:range xsd:string .
+
+# NEW TRIPLES FOR THE NAIROBI-01 MAP
+padi:Dewey_Modernized rdf:type padi:ResourceAddress ;
+    padi:ResourceStatus "DETERMINISTIC" ;
+    padi:hasCoordinate "PADI-025.04" .
