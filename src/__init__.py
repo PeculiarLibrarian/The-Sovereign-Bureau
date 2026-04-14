@@ -1,2 +1,2 @@
 from .engine import PADIEngine
-from .liaison.py import SovereignLiaison
+from .liaison import SovereignLiaison
