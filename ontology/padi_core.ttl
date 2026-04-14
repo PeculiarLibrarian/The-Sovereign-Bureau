@@ -1,0 +1,19 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix padi: <https://padi.tech/v2/schema#> .
+
+# THE AUTHORITY DEFINITION
+padi:SovereignNode rdf:type owl:Class ;
+    padi:tag "#sovereign-bureau" ;
+    padi:principle "#deterministic-truth" .
+
+padi:Nairobi_01_Node rdf:type padi:SovereignNode ;
+    padi:integrityLevel 100 ;
+    padi:status "ACTIVE" ;
+    padi:authority "The Peculiar Librarian" .
+
+# THE SEMANTIC INTEROPERABILITY RULE
+padi:InformationScienceNode rdf:type owl:Class ;
+    padi:requires "#semantic-web" ;
+    padi:goal "#information-science" .
