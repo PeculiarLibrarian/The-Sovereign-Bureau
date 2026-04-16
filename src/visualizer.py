@@ -1,24 +1,20 @@
-import streamlit as st
-import json
 import os
+import streamlit as st
 
-# Deterministic Path Resolution
-# This looks for the file relative to where this script is sitting
-current_dir = os.path.dirname(os.path.abspath(__file__))
-data_path = os.path.join(current_dir, "..", "data", "graph_data.json")
+# This logic works regardless of whether the 'root' is the repo or the folder
+possible_paths = [
+    "the-sovereign-bureau/data/graph_data.json", # Root-level view
+    "data/graph_data.json",                      # Folder-level view
+    "../data/graph_data.json"                    # Script-relative view
+]
 
-def load_graph():
-    if os.path.exists(data_path):
-        with open(data_path, 'r') as f:
-            return json.load(f)
-    return None
+data_path = None
+for p in possible_paths:
+    if os.path.exists(p):
+        data_path = p
+        break
 
-data = load_graph()
-
-if data:
-    st.success("Nairobi-01 Node Synchronized.")
-    # ... your existing agraph(data['nodes'], data['links']...) code ...
-else:
-    # This will help us debug exactly where the Cloud thinks the file should be
-    st.error(f"Graph data not found at: {data_path}")
-    st.info("System Check: Ensure 'graph_data.json' exists in the /data folder.")
+if not data_path:
+    st.error("Sovereign Protocol Failure: graph_data.json not found in any known sector.")
+    st.info(f"Current Working Directory: {os.getcwd()}")
+    st.info(f"Directory Contents: {os.listdir('.')}")
